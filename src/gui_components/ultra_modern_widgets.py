@@ -19,10 +19,10 @@ class GlassmorphicCard(ctk.CTkFrame):
         
         super().__init__(
             parent,
-            fg_color=(*self._hex_to_rgb(theme["bg_secondary"]), 0.7),
+            fg_color=theme["bg_secondary"],
             corner_radius=20,
             border_width=1,
-            border_color=(*self._hex_to_rgb(theme["accent"]), 0.3),
+            border_color=theme["accent"],
             **kwargs
         )
         

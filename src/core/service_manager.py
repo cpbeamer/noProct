@@ -118,9 +118,21 @@ class ServiceManager:
         self.logger.info("Stopping service...")
         self.running = False
         
-        # Wait for threads to finish
+        # Stop all threads gracefully
+        threads_to_stop = []
         if self.main_thread and self.main_thread.is_alive():
-            self.main_thread.join(timeout=5)
+            threads_to_stop.append(self.main_thread)
+        if self.abort_thread and self.abort_thread.is_alive():
+            threads_to_stop.append(self.abort_thread)
+        if self.monitor_thread and self.monitor_thread.is_alive():
+            threads_to_stop.append(self.monitor_thread)
+        
+        # Wait for threads to finish with timeout
+        for thread in threads_to_stop:
+            thread.join(timeout=2)
+        
+        # Clean up components
+        self._cleanup_components()
         
         # Log final statistics
         if self._stats_tracker:
@@ -128,6 +140,23 @@ class ServiceManager:
             self.logger.info(f"Service statistics: {stats}")
         
         self.logger.info("Service stopped")
+    
+    def _cleanup_components(self):
+        """Clean up all service components"""
+        try:
+            # Clean up screen monitor
+            if self._screen_monitor and hasattr(self._screen_monitor, 'sct'):
+                self._screen_monitor.sct.close()
+            
+            # Reset all components
+            self._screen_monitor = None
+            self._ocr_engine = None
+            self._detector = None
+            self._controller = None
+            self._researcher = None
+            self._stats_tracker = None
+        except Exception as e:
+            self.logger.warning(f"Error during cleanup: {e}")
     
     def pause(self):
         """Pause the service"""

@@ -39,7 +39,7 @@ An ultra-modern automated question assistance tool for Windows with cutting-edge
 1. **Clone or download this repository**
    ```bash
    git clone https://github.com/yourusername/NoProct.io.git
-   cd NoProct.io
+   cd NoProct
    ```
 
 2. **Run the installer** (Choose based on your Python version)

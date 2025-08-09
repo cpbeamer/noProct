@@ -3,19 +3,26 @@ import numpy as np
 from PIL import Image
 import cv2
 import logging
+import os
 
 class ScreenMonitor:
     def __init__(self):
+        # Use mss with silent mode to prevent screenshot sounds
+        # mss is already silent by default, but ensure Windows sounds are bypassed
+        os.environ['MSS_NOWARNING'] = '1'  # Suppress mss warnings
         self.sct = mss.mss()
         self.last_screenshot = None
+        self.silent_mode = True
     
     def capture_screen(self, monitor_index=0):
         try:
+            # Use monitors[1] for primary monitor (monitors[0] is all monitors combined)
             if monitor_index == 0:
-                monitor = self.sct.monitors[0]
+                monitor = self.sct.monitors[1]  # Primary monitor
             else:
                 monitor = self.sct.monitors[monitor_index]
             
+            # Silent screenshot capture
             screenshot = self.sct.grab(monitor)
             
             img = Image.frombytes('RGB', (screenshot.width, screenshot.height), 

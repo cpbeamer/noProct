@@ -21,7 +21,7 @@ from src.gui_components.ultra_modern_widgets import (
 )
 from src.gui_components.custom_widgets import (
     AnimatedButton, GlowingEntry, ToggleSwitch, 
-    NotificationToast, SearchBar
+    NotificationToast
 )
 from src.gui_components.system_tray import SystemTray
 from src.utils.logger import get_logger
@@ -38,11 +38,11 @@ class UltraModernAssistant(ctk.CTk):
         super().__init__()
         
         self.title("Question Assistant Pro 2024")
-        self.geometry("1400x800")
-        self.minsize(1200, 700)
+        self.geometry("1200x700")
+        self.minsize(1000, 600)
         
-        # Set window transparency for modern look
-        self.attributes("-alpha", 0.98)
+        # Full opacity - no transparency
+        self.attributes("-alpha", 1.0)
         
         # Initialize components
         self.config = Config()
@@ -61,9 +61,8 @@ class UltraModernAssistant(ctk.CTk):
         # Setup keyboard shortcuts
         self._setup_shortcuts()
         
-        # Center window with fade-in animation
+        # Center window - no animation
         self._center_window()
-        self._fade_in_animation()
         
         # Protocol handlers
         self.protocol("WM_DELETE_WINDOW", self._on_closing)
@@ -111,34 +110,34 @@ class UltraModernAssistant(ctk.CTk):
         """Create animated collapsible sidebar"""
         theme = theme_manager.get_theme()
         
-        # Use animated sidebar widget
+        # Use animated sidebar widget - narrower
         self.sidebar = AnimatedSidebar(
             self.main_container,
-            width=280
+            width=220
         )
-        self.sidebar.pack(side="left", fill="y", padx=(10, 0), pady=10)
+        self.sidebar.pack(side="left", fill="y", padx=(5, 0), pady=5)
         
-        # Logo section with animation
+        # Logo section with animation - minimal padding
         logo_container = ctk.CTkFrame(self.sidebar, fg_color="transparent")
-        logo_container.pack(pady=(60, 30))
+        logo_container.pack(pady=(10, 10))
         
-        # Animated logo
+        # Animated logo - smaller
         self.logo_label = ctk.CTkLabel(
             logo_container,
             text="🚀",
-            font=("Segoe UI", 48)
+            font=("Segoe UI", 36)
         )
         self.logo_label.pack()
         self._animate_logo()
         
-        # App title with gradient text effect
+        # App title with gradient text effect - smaller
         self.title_label = ctk.CTkLabel(
             logo_container,
             text="Question Assistant",
-            font=("Segoe UI Bold", 20),
+            font=("Segoe UI Bold", 16),
             text_color=theme["accent"]
         )
-        self.title_label.pack(pady=(10, 0))
+        self.title_label.pack(pady=(5, 0))
         
         # Version badge with pulse
         self.version_badge = PulsingBadge(
@@ -180,8 +179,8 @@ class UltraModernAssistant(ctk.CTk):
                 text=f"{icon}  {text}",
                 command=lambda p=page_id: self._show_page(p),
                 anchor="w",
-                width=240,
-                height=45
+                width=200,
+                height=40
             )
             btn.pack(fill="x")
             
@@ -210,65 +209,63 @@ class UltraModernAssistant(ctk.CTk):
         self.theme_switch.select()
     
     def _create_modern_header(self):
-        """Create modern header with search and controls"""
+        """Create minimal header with controls only"""
         theme = theme_manager.get_theme()
         
-        # Header with glass effect
-        self.header = GlassmorphicCard(self.content_area)
-        self.header.pack(fill="x", padx=20, pady=(20, 10))
+        # Minimal header frame - 10% of window
+        self.header = ctk.CTkFrame(self.content_area, fg_color=theme["bg_secondary"], height=50)
+        self.header.pack(fill="x", padx=10, pady=(2, 2))
+        self.header.pack_propagate(False)
         
-        # Search section
-        search_frame = ctk.CTkFrame(self.header, fg_color="transparent")
-        search_frame.pack(side="left", padx=20, pady=15)
+        # Remove search bar - not needed
         
-        self.search_bar = SearchBar(
-            search_frame,
-            placeholder="🔍 Search anything...",
-            command=self._handle_search,
-            width=400
-        )
-        self.search_bar.pack()
-        
-        # Control buttons with modern styling
+        # Control buttons frame - centered
         controls_frame = ctk.CTkFrame(self.header, fg_color="transparent")
-        controls_frame.pack(side="right", padx=20)
+        controls_frame.pack(expand=True, pady=8)
         
-        # Start button with animation
-        self.start_btn = NeumorphicButton(
+        # Compact control buttons
+        self.start_btn = ctk.CTkButton(
             controls_frame,
             text="▶️ Start",
             command=self._start_service,
-            width=100
+            width=70,
+            height=30,
+            fg_color=theme["accent"],
+            hover_color=theme["accent_hover"]
         )
         self.start_btn.pack(side="left", padx=5)
         
         # Stop button
-        self.stop_btn = NeumorphicButton(
+        self.stop_btn = ctk.CTkButton(
             controls_frame,
             text="⏹️ Stop",
             command=self._stop_service,
-            width=100
+            width=70,
+            height=30,
+            fg_color=theme["error"],
+            hover_color="#cc0000"
         )
         self.stop_btn.pack(side="left", padx=5)
         self.stop_btn.configure(state="disabled")
         
         # Settings button
-        settings_btn = FloatingActionButton(
+        settings_btn = ctk.CTkButton(
             controls_frame,
-            icon="⚙️",
+            text="⚙️",
             command=lambda: self._show_page("config"),
-            size=40
+            width=30,
+            height=30
         )
-        settings_btn.pack(side="left", padx=10)
+        settings_btn.pack(side="left", padx=5)
     
     def _create_content_area(self):
         """Create main content area with pages"""
-        # Scrollable content
+        # Scrollable content frame - maximized
         self.content_frame = ctk.CTkScrollableFrame(
             self.content_area,
             fg_color="transparent"
         )
-        self.content_frame.pack(fill="both", expand=True, padx=20, pady=10)
+        self.content_frame.pack(fill="both", expand=True, padx=10, pady=2)
         
         # Create pages
         self.pages = {}
@@ -777,14 +774,6 @@ class UltraModernAssistant(ctk.CTk):
         
         self.after(2000, self._animate_logo)
     
-    def _fade_in_animation(self):
-        """Fade in window on start"""
-        alpha = 0.0
-        while alpha < 0.98:
-            alpha += 0.02
-            self.attributes("-alpha", alpha)
-            self.update()
-            time.sleep(0.01)
     
     def _toggle_theme(self):
         """Toggle theme with animation"""
@@ -795,12 +784,6 @@ class UltraModernAssistant(ctk.CTk):
         """Update duration display"""
         self.duration_value.configure(text=f"{int(value)} min")
     
-    def _handle_search(self, query):
-        """Handle search with animation"""
-        if query:
-            self.processing_indicator.start()
-            self.after(2000, self.processing_indicator.stop)
-            NotificationToast(self, f"Searching: {query}", "info")
     
     def _show_quick_actions(self):
         """Show quick actions menu"""
@@ -841,17 +824,27 @@ class UltraModernAssistant(ctk.CTk):
     
     def _stop_service(self):
         """Stop service"""
-        if self.service_manager:
-            self.service_manager.stop()
-            self.service_manager = None
-            
-            # Update UI
-            self.start_btn.configure(state="normal")
-            self.stop_btn.configure(state="disabled")
-            self.status_text.configure(text="🟢 Ready")
-            self.activity_progress.set_progress(0)
-            
-            NotificationToast(self, "Service stopped", "info")
+        try:
+            if self.service_manager and self.service_manager.running:
+                # Stop the service immediately
+                self.service_manager.running = False
+                self.service_manager.stop()
+                self.service_manager = None
+                
+                # Update UI
+                self.start_btn.configure(state="normal")
+                self.stop_btn.configure(state="disabled")
+                self.status_text.configure(text="🟢 Ready")
+                self.activity_progress.set_progress(0)
+                
+                # Stop any animations
+                if hasattr(self, 'processing_indicator'):
+                    self.processing_indicator.stop()
+                
+                NotificationToast(self, "Service stopped", "info")
+        except Exception as e:
+            self.logger.error(f"Error stopping service: {e}")
+            NotificationToast(self, f"Error stopping service: {str(e)}", "error")
     
     def _start_background_animations(self):
         """Start background animations"""

@@ -2,6 +2,7 @@ import sys
 import os
 import argparse
 from pathlib import Path
+from typing import Optional
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent))
@@ -13,8 +14,8 @@ from src.core.service_manager import ServiceManager, install_service
 def main():
     """Main entry point with CLI arguments"""
     parser = argparse.ArgumentParser(description='Question Assistant - Automated Q&A Tool')
-    parser.add_argument('--mode', choices=['gui', 'service', 'install', 'console'], 
-                       default='gui', help='Run mode')
+    parser.add_argument('--mode', choices=['gui', 'tray', 'service', 'install', 'console'], 
+                       default='tray', help='Run mode (default: tray)')
     parser.add_argument('--config', type=str, help='Path to config file')
     parser.add_argument('--debug', action='store_true', help='Enable debug logging')
     parser.add_argument('--no-gui', action='store_true', help='Run without GUI')
@@ -30,15 +31,30 @@ def main():
     logger.info(f"Starting Question Assistant in {args.mode} mode")
     
     try:
-        if args.mode == 'gui' and not args.no_gui:
-            # Run GUI mode - use ultra-modern GUI
+        if args.mode == 'tray':
+            # Run in system tray mode (default)
             try:
-                from src.gui_components.ultra_modern_main import UltraModernAssistant
-                app = UltraModernAssistant()
+                from src.gui_components.tray_app_fixed import TrayApplication
             except ImportError:
-                # Fallback to enhanced GUI if ultra-modern fails
-                from src.gui_components.enhanced_main import ModernQuestionAssistant
-                app = ModernQuestionAssistant()
+                from src.gui_components.tray_app import TrayApplication
+            app = TrayApplication()
+            app.run()
+            
+        elif args.mode == 'gui' and not args.no_gui:
+            # Run GUI mode - use simple, clean GUI
+            try:
+                from src.gui_components.simple_main import SimpleAssistant
+                app = SimpleAssistant()
+            except ImportError as e:
+                logger.error(f"Failed to import GUI: {e}")
+                # Fallback to ultra-modern GUI
+                try:
+                    from src.gui_components.ultra_modern_main import UltraModernAssistant
+                    app = UltraModernAssistant()
+                except ImportError:
+                    # Final fallback
+                    from src.gui_components.enhanced_main import ModernQuestionAssistant
+                    app = ModernQuestionAssistant()
             app.mainloop()
             
         elif args.mode == 'service':
