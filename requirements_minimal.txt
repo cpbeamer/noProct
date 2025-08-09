@@ -1,0 +1,32 @@
+# Minimal requirements for Python 3.12
+# These are the essential packages needed to run the application
+
+# Core GUI
+customtkinter==5.2.1
+
+# Windows API
+pywin32==306
+
+# Screen capture and OCR
+mss==9.0.1
+pytesseract==0.3.10
+Pillow==10.1.0
+
+# Automation
+pyautogui==0.9.54
+pynput==1.7.6
+
+# AI Integration (optional but recommended)
+anthropic==0.18.0
+requests==2.31.0
+beautifulsoup4==4.12.2
+
+# System monitoring
+psutil==5.9.6
+
+# Security
+cryptography==41.0.5
+keyring==24.3.0
+
+# Basic utilities
+packaging==23.2

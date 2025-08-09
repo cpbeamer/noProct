@@ -1,0 +1,75 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.manifest
+*.spec
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Project specific
+logs/*.log
+config/settings.json
+config/custom_themes.json
+config/.key
+config/.salt
+*.tmp
+*.bak
+
+# Security - Never commit sensitive data
+*.key
+*.pem
+*.cert
+secrets.json
+.env
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+test_reports/
+
+# Build outputs
+dist/
+build/
+*.exe
+
+# User data
+%APPDATA%/
+user_data/
+
+# Temporary files
+temp/
+tmp/
+*.temp
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Documentation build
+docs/_build/
+
+# PyInstaller
+*.manifest
+*.spec
+build/
+dist/
